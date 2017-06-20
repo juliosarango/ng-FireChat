@@ -13,8 +13,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
-  login( proveedor: string ){
-    console.log(proveedor);
+  login( proveedor: string ){    
     this.chatService.login(proveedor);
 
   }

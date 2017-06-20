@@ -11,14 +11,28 @@ export class ChatService {
 
   chats: FirebaseListObservable<any[]>;
 
-  usuario:any = {
-    nombre: 'Julio Sarango'
-  }
+  usuario:any = {}
 
   user: Observable<firebase.User>;
+  userId: string;
+  displayName:string;
 
   constructor( private aFire: AngularFireDatabase, public afAuth: AngularFireAuth) {
         this.user = afAuth.authState;
+        //console.log(this.user);
+
+        //también podemos comprobar de estar forma
+      /*  if (localStorage.getItem('usuario')) {
+          this.usuario = JSON.parse(localStorage.getItem('usuario'));
+        }*/
+
+        this.user.subscribe( (data) => {
+          if (data) {
+            this.userId = data.uid;
+            this.displayName = data.displayName;
+          }
+        });
+
   }
 
   cargarMensajes (){
@@ -33,10 +47,10 @@ export class ChatService {
   }
 
   agregarMensaje( texto:string ){
-
     let mensaje:Mensaje = {
-        nombre: "Julio Sarango",
-        mensaje: texto
+        nombre: this.displayName,
+        mensaje: texto,
+        uid: this.userId
     }
     //regresa una promesa
     return this.chats.push( mensaje );
@@ -45,18 +59,24 @@ export class ChatService {
   login( proveedor ) {
     let provider;
     if (proveedor == "google"){
-      console.log(proveedor);
       provider = new firebase.auth.GoogleAuthProvider();
     }else {
       provider = new firebase.auth.TwitterAuthProvider();
     }
 
-    this.afAuth.auth.signInWithPopup(provider);
+    this.afAuth.auth.signInWithPopup(provider)
+        .then((data) => {
+        //  this.usuario = data;
+        //  this.user = data;
+          localStorage.setItem('usuario',JSON.stringify(data));
+        });
   }
 
   logout() {
-    this.afAuth.auth.signOut();
+    localStorage.removeItem('usuario');
+    //this.usuario = null;
+    this.afAuth.auth.signOut().then( (data) => {
+    });
   }
-
 
 }

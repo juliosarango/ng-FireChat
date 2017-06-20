@@ -1,11 +1,12 @@
 <h3>Chat</h3>
 <hr>
 <div class="app-mensajes" id="app-mensajes">
+
   <div *ngFor="let chat of chatService.chats | async"
-      [ngClass]="{ 'text-right': chatService.usuario.nombre == chat.nombre  }">
+      [ngClass]="{ 'text-right': (chatService.user | async)?.uid == chat.uid  }">
       <span class="badge"
-            [ngClass]="{ 'badge-primary': chatService.usuario.nombre == chat.nombre,
-                         'badge-success': chatService.usuario.nombre != chat.nombre}">
+            [ngClass]="{ 'badge-primary': (chatService.user | async)?.uid === chat.uid,
+                         'badge-success': (chatService.user | async)?.uid !== chat.uid }">
         {{ chat.nombre }}
       </span>
       <p> {{ chat.mensaje }} </p>

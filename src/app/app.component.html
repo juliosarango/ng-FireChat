@@ -1,14 +1,22 @@
 <div class="container main-container">
   <h1>Firechat</h1>
-  <hr>
 
+  <div class="text-right" *ngIf="(chatService.user | async)?.uid">
+    <span>Bienvenido {{ (chatService.user | async)?.displayName }}</span>
+  </div>
+  <div class="text-right" *ngIf="(chatService.user | async)?.uid" >
+    <button (click)="chatService.logout()"  type="button" class="btn btn-outline-danger" name="button">Salir</button>
+  </div>
+  <hr>
+<div *ngIf="!(chatService.user | async)">
   <app-login>
   </app-login>
-<!--
-  <div class="chat-window">
-    <app-chat>
-    </app-chat>
+</div>
 
-  </div>
--->
+<div class="chat-window" *ngIf="(chatService.user | async)?.uid">
+  <app-chat>
+  </app-chat>
+
+</div>
+
 </div>
